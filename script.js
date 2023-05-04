@@ -1,48 +1,46 @@
-//your JS code here. If required.
-function waitRandomTime() {
-  return new Promise((resolve) => {
-    const randomTime = Math.floor(Math.random() * 3000) + 1000;
-    setTimeout(() => {
-      resolve(randomTime);
-    }, randomTime);
-  });
-}
+let rows=document.querySelector("#output");
 
-const promises = [waitRandomTime(), waitRandomTime(), waitRandomTime()];
+	rows.innerHTML=
+		`<tr id="loading">
+		  <td colspan=2 >Loading...</td>
+		  </tr>`;
 
-const tableBody = document.getElementById("output");
+let p1 = new Promise((resolve,reject)=>{
+	let time1=Math.random()*2+1;
+	setTimeout(()=>{
+		resolve(time1);
+	},time1*1000);
+});
 
-const loadingRow = document.createElement("tr");
-const loadingCell = document.createElement("td");
-loadingCell.colSpan = 2;
-loadingCell.innerText = "Loading...";
-loadingRow.appendChild(loadingCell);
-tableBody.appendChild(loadingRow);
+let p2 = new Promise((resolve,reject)=>{
+	let time2=Math.random()*2+1;
+	setTimeout(()=>{
+		resolve(time2);
+	},time2*1000);
+});
 
-Promise.all(promises)
-  .then((results) => {
-    tableBody.removeChild(loadingRow);
+let p3 = new Promise((resolve,reject)=>{
+	let time3=Math.random()*2+1;
+	setTimeout(()=>{
+		resolve(time3);
+	},time3*1000);
+});
 
-    results.forEach((time, index) => {
-      const row = document.createElement("tr");
-      const nameCell = document.createElement("td");
-      const timeCell = document.createElement("td");
-      nameCell.innerText = `Promise ${index + 1}`;
-      timeCell.innerText = `${(time / 1000).toFixed(3)}`;
-      row.appendChild(nameCell);
-      row.appendChild(timeCell);
-      tableBody.appendChild(row);
-    });
-
-    const totalRow = document.createElement("tr");
-    const totalNameCell = document.createElement("td");
-    const totalTimeCell = document.createElement("td");
-    totalNameCell.innerText = "Total";
-    totalTimeCell.innerText = `${(results.reduce((acc, cur) => acc + cur) / 1000).toFixed(3)}`;
-    totalRow.appendChild(totalNameCell);
-    totalRow.appendChild(totalTimeCell);
-    tableBody.appendChild(totalRow);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+Promise.all([p1,p2,p3]).then((result)=>{
+	let sum=0;
+	rows.innerHTML="";
+	for(var i=0;i<result.length;i++){
+		sum +=result[i];
+		rows.innerHTML +=
+			`<tr>
+			   <td>Promise ${i+1}</td>
+				<td>${result[i]}</td>
+			</tr>`;
+		
+	}
+	rows.innerHTML +=
+			`<tr>
+			   <td>Total</td>
+				<td>${sum}</td>
+			</tr>`;
+})
